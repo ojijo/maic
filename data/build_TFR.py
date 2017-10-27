@@ -95,13 +95,11 @@ import threading
 
 
 
-import nltk.tokenize
+#import nltk.tokenize
 import numpy as np
 import tensorflow as tf
 
 import jieba
-
-import importlib
 
 
 tf.flags.DEFINE_string("train_image_dir", "/tmp/train2014/",
@@ -116,11 +114,18 @@ tf.flags.DEFINE_string("val_captions_file", "/tmp/captions_val2014.json",
 
 tf.flags.DEFINE_string("output_dir", "/tmp/", "Output data directory.")
 
-tf.flags.DEFINE_integer("train_shards", 256,
+# tf.flags.DEFINE_integer("train_shards", 256,
+#                         "Number of shards in training TFRecord files.")
+# tf.flags.DEFINE_integer("val_shards", 4,
+#                         "Number of shards in validation TFRecord files.")
+# tf.flags.DEFINE_integer("test_shards", 8,
+#                         "Number of shards in testing TFRecord files.")
+
+tf.flags.DEFINE_integer("train_shards", 1,
                         "Number of shards in training TFRecord files.")
-tf.flags.DEFINE_integer("val_shards", 4,
+tf.flags.DEFINE_integer("val_shards", 1,
                         "Number of shards in validation TFRecord files.")
-tf.flags.DEFINE_integer("test_shards", 8,
+tf.flags.DEFINE_integer("test_shards", 1,
                         "Number of shards in testing TFRecord files.")
 
 tf.flags.DEFINE_string("start_word", "<S>",
@@ -129,7 +134,10 @@ tf.flags.DEFINE_string("end_word", "</S>",
                        "Special word added to the end of each sentence.")
 tf.flags.DEFINE_string("unknown_word", "<UNK>",
                        "Special word meaning 'unknown'.")
-tf.flags.DEFINE_integer("min_word_count", 4,
+# tf.flags.DEFINE_integer("min_word_count", 4,
+#                         "The minimum number of occurrences of each word in the "
+#                         "training set for inclusion in the vocabulary.")
+tf.flags.DEFINE_integer("min_word_count", 2,
                         "The minimum number of occurrences of each word in the "
                         "training set for inclusion in the vocabulary.")
 tf.flags.DEFINE_string("word_counts_output_file", "/tmp/word_counts.txt",
@@ -401,13 +409,13 @@ def _process_caption(caption):
   #print(len(caption))
   
   ##########cut into words using jieba
-#   words = jieba.cut(caption)
-#   for token in words:
-#       tokenized_caption.append(token)  
+  words = jieba.cut(caption)
+  for token in words:
+    tokenized_caption.append(token)  
   
-  ##########cut into character directly    
-  for token in caption:
-      tokenized_caption.append(token)  
+#   ##########cut into character directly    
+#   for token in caption:
+#       tokenized_caption.append(token)  
       
   tokenized_caption.append(FLAGS.end_word)
   return tokenized_caption
