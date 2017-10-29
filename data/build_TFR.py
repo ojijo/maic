@@ -102,17 +102,17 @@ import tensorflow as tf
 import jieba
 
 
-tf.flags.DEFINE_string("train_image_dir", "/tmp/train2014/",
+tf.flags.DEFINE_string("train_image_dir", "./ai-data/images/",
                        "Training image directory.")
-tf.flags.DEFINE_string("val_image_dir", "/tmp/val2014",
+tf.flags.DEFINE_string("val_image_dir", "./ai-data/v_images",
                        "Validation image directory.")
 
-tf.flags.DEFINE_string("train_captions_file", "/tmp/captions_train2014.json",
+tf.flags.DEFINE_string("train_captions_file", "./ai-data/caption.txt",
                        "Training captions JSON file.")
-tf.flags.DEFINE_string("val_captions_file", "/tmp/captions_val2014.json",
+tf.flags.DEFINE_string("val_captions_file", "./ai-data/v_caption.txt",
                        "Validation captions JSON file.")
 
-tf.flags.DEFINE_string("output_dir", "/tmp/", "Output data directory.")
+tf.flags.DEFINE_string("output_dir", "./ai-data/output/", "Output data directory.")
 
 # tf.flags.DEFINE_integer("train_shards", 256,
 #                         "Number of shards in training TFRecord files.")
@@ -140,7 +140,7 @@ tf.flags.DEFINE_string("unknown_word", "<UNK>",
 tf.flags.DEFINE_integer("min_word_count", 2,
                         "The minimum number of occurrences of each word in the "
                         "training set for inclusion in the vocabulary.")
-tf.flags.DEFINE_string("word_counts_output_file", "/tmp/word_counts.txt",
+tf.flags.DEFINE_string("word_counts_output_file", "./ai-data/output/word_counts.txt",
                        "Output vocabulary file of word counts.")
 
 tf.flags.DEFINE_integer("num_threads", 8,
@@ -487,8 +487,8 @@ def main(unused_argv):
   # Load image metadata from caption files.
   mscoco_train_dataset = _load_and_process_metadata(FLAGS.train_captions_file,
                                                     FLAGS.train_image_dir)
-  mscoco_val_dataset = _load_and_process_metadata(FLAGS.val_captions_file,
-                                                  FLAGS.val_image_dir)
+#   mscoco_val_dataset = _load_and_process_metadata(FLAGS.val_captions_file,
+#                                                   FLAGS.val_image_dir)
 
   # Redistribute the MSCOCO data as follows:
   #   train_dataset = 100% of mscoco_train_dataset + 85% of mscoco_val_dataset.
@@ -501,18 +501,18 @@ def main(unused_argv):
 #   val_dataset = mscoco_val_dataset[train_cutoff:val_cutoff]
 #   test_dataset = mscoco_val_dataset[val_cutoff:]
 
-  val_cutoff = int(0.90 * len(mscoco_val_dataset))
+#   val_cutoff = int(0.90 * len(mscoco_val_dataset))
   train_dataset = mscoco_train_dataset
-  val_dataset = mscoco_val_dataset[0:val_cutoff]
-  test_dataset = mscoco_val_dataset[val_cutoff:]
+#   val_dataset = mscoco_val_dataset[0:val_cutoff]
+#   test_dataset = mscoco_val_dataset[val_cutoff:]
 
   # Create vocabulary from the training captions.
   train_captions = [c for image in train_dataset for c in image.captions]
   vocab = _create_vocab(train_captions)
 
   _process_dataset("train", train_dataset, vocab, FLAGS.train_shards)
-  _process_dataset("val", val_dataset, vocab, FLAGS.val_shards)
-  _process_dataset("test", test_dataset, vocab, FLAGS.test_shards)
+#   _process_dataset("val", val_dataset, vocab, FLAGS.val_shards)
+#   _process_dataset("test", test_dataset, vocab, FLAGS.test_shards)
 
 
 if __name__ == "__main__":

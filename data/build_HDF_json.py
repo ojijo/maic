@@ -5,10 +5,11 @@ from __future__ import print_function
 import json
 import os
 import jieba
+import argparse
 
-#import sys
-#reload(sys)
-#sys.setdefaultencoding('utf-8')
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 def _process_caption(caption):
   """Processes a caption string into a list of tonenized words.
@@ -89,11 +90,22 @@ def _load_and_process_metadata(captions_file, image_dir):
   return image_metadata
 
 
-def main():
+def main(params):
+  
   # Load image metadata from caption files.
-  dataset = _load_and_process_metadata("ai-data/caption.txt", "ai-data/images")
-  json.dump(dataset, open('ai-data/output/coco_raw.json', 'w'))
+  dataset = _load_and_process_metadata(params['input_captions'], params['input_image_dir'])
+  json.dump(dataset, open(params['output_json'], 'w'))
 
 
 if __name__ == "__main__":
-  main()
+  parser = argparse.ArgumentParser()
+
+  # input json
+  parser.add_argument('--input_captions', default='./ai-data/caption.txt', help='input caption file')
+  parser.add_argument('--input_image_dir', default='.ai-data/images', help='input image directory')
+  parser.add_argument('--output_json', default='./ai-data/output/coco_raw.json', help='raw json file')
+  args = parser.parse_args()
+  params = vars(args) # convert to ordinary dict
+  print( 'parsed input parameters:')
+  print( json.dumps(params, indent = 2))
+  main(params)

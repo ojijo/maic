@@ -33,9 +33,9 @@ import h5py
 import numpy as np
 from scipy.misc import imread, imresize
 
-#import sys
-#reload(sys)
-#sys.setdefaultencoding('utf-8')
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 def prepro_captions(imgs):
   
@@ -44,7 +44,8 @@ def prepro_captions(imgs):
   for i,img in enumerate(imgs):
     img['processed_tokens'] = []
     for j,s in enumerate(img['captions']):
-      txt = str(s).lower().translate(None, string.punctuation).strip().split()
+      #txt = str(s).lower().translate(None, string.punctuation).strip().split()
+      txt = s
       img['processed_tokens'].append(txt)
       if i < 10 and j == 0: print(txt)
 
@@ -153,7 +154,7 @@ def encode_captions(imgs, params, wtoi):
   assert L.shape[0] == M, 'lengths don\'t match? that\'s weird'
   assert np.all(label_length > 0), 'error: some caption had no words?'
 
-  print ( 'encoded captions to array of size '  + L.shape)
+  print ( 'encoded captions to array of size '  , L.shape)
   return L, label_start_ix, label_end_ix, label_length
 
 def main(params):
@@ -226,15 +227,15 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser()
 
   # input json
-  parser.add_argument('--input_json', default='ai-data/output/coco_raw.json', help='input json file to process into hdf5')
+  parser.add_argument('--input_json', default='./ai-data/output/coco_raw.json', help='input json file to process into hdf5')
   parser.add_argument('--num_val', default=1, type=int, help='number of images to assign to validation data (for CV etc)')
-  parser.add_argument('--output_json', default='/ai-data/output/cocotalk_challenge.json', help='output json file')
-  parser.add_argument('--output_h5', default='/ai-data/output/cocotalk_challenge.h5', help='output h5 file')
+  parser.add_argument('--output_json', default='./ai-data/output/cocotalk_challenge.json', help='output json file')
+  parser.add_argument('--output_h5', default='./ai-data/output/cocotalk_challenge.h5', help='output h5 file')
   
   # options
   parser.add_argument('--max_length', default=18, type=int, help='max length of a caption, in number of words. captions longer than this get clipped.')
-  parser.add_argument('--images_root', default='.', help='root location in which images are stored, to be prepended to file_path in input json')
-  parser.add_argument('--word_count_threshold', default=5, type=int, help='only words that occur more than this number of times will be put in vocab')
+  parser.add_argument('--images_root', default='./', help='root location in which images are stored, to be prepended to file_path in input json')
+  parser.add_argument('--word_count_threshold', default=2, type=int, help='only words that occur more than this number of times will be put in vocab')
   parser.add_argument('--num_test', default=0, type=int, help='number of test images (to withold until very very end)')
 
   args = parser.parse_args()
