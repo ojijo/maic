@@ -27,15 +27,14 @@ import os
 import json
 import argparse
 from random import shuffle, seed
-import string
 # non-standard dependencies:
 import h5py
 import numpy as np
 from scipy.misc import imread, imresize
 
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+#import sys
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
 
 def prepro_captions(imgs):
   

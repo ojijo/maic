@@ -7,9 +7,9 @@ import os
 import jieba
 import argparse
 
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+#import sys
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
 
 def _process_caption(caption):
   """Processes a caption string into a list of tonenized words.
